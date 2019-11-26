@@ -11,3 +11,7 @@ And now all note was written by Chinese , English note may be completed in the f
 
 1. 没有对缺失值，异常值（nan）的处理。
 2. 没有多分类的功能，只支持二分类。
+3. 暂时只支持feature全部是连续数值类型，catefory暂时不支持。
+4. 暂时不能处理缺失值。
+5. 没有加入EFB ， 即不考虑比较稀疏的特征的处理。
+6. 

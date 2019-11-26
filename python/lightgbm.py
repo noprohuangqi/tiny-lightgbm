@@ -22,11 +22,11 @@ def train(params , X_train , y_train):
     返回值是一个ctypes下的指针，指向model
     '''
 
-    # 处理参数
-    params = {'objective':'binary' ,
-              'num_iteration': 100,
-              'learning_rates': 0.1,}
-    params_c = c_str(param_dict_to_str(params))
+    # # 处理参数
+    # params = {'objective':'binary' ,
+    #           'num_iteration': 100,
+    #           'learning_rates': 0.1,}
+    # params_c = c_str(param_dict_to_str(params))
 
     # 新建两个指针，分别对应model和data
     model = ctypes.c_void_p()
@@ -42,14 +42,14 @@ def train(params , X_train , y_train):
             y_train_c,
             ctypes.c_int(num_row),
             ctypes.c_int(num_col),
-            params_c,
+            # params_c,
             ctypes.byref(dataset))
 
 
     ## 初始化model
     _LIB.LGBM_BoosterCreate(
             dataset,
-            params_c,
+            # params_c,
             ctypes.byref(model))
 
     ## 训练model
@@ -88,14 +88,6 @@ def predict(model , X_test):
     return preds
 
 
-
-
-
-
-
-
-
-def load_data():
 
 
 if __name__ == "__main__":

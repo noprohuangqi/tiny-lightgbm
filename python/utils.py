@@ -1,6 +1,11 @@
 
 
 
+def load_data():
+
+
+
+    
 def reshape_to_c(data,is_label):
 
     shape0 = data.shape(0)
