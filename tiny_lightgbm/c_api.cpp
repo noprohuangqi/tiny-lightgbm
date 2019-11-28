@@ -4,6 +4,9 @@
 #include "define.h"
 #include "utils.h"
 #include "bin.h"
+#include "boosting.h"
+#include "objective_function.h"
+#include "metric.h"
 
 
 #include <cstdio>
@@ -24,14 +27,23 @@ public:
 
 		train_data_ = train_data;
 
+		boosting_.reset(Boosting::CreateBoosting());
 
 
+
+
+	}
+
+
+	void CreateObjectiveAndMetrics() {
 
 	}
 
 private:
 	const Dataset* train_data_;
 	std::unique_ptr<Boosting> boosting_;
+
+	std::unique_ptr<ObjectiveFunction> objective_fun_;
 
 };
 
@@ -47,6 +59,9 @@ private:
 
 
 using namespace Tiny_LightGBM;
+
+
+
 
 
 std::function<std::vector<double>(int row_idx)> RowFunctionFromDenseMatric(const void* data ,
@@ -145,6 +160,10 @@ int LGBM_DatasetCreateFromMat(const void* data,
 
 		ret->PushOneRow(start_row + i, onw_row);
 	}
+
+	bool is_success = false;
+
+	is_success = ret->SetFloatField(reinterpret_cast<const float*>(label));
 
 
 	*out = ret.release();

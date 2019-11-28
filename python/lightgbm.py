@@ -46,6 +46,12 @@ def train(params , X_train , y_train):
             ctypes.byref(dataset))
 
 
+    # _LIB.LGBM_DatasetSetField(
+    #         dataset,
+    #         num_row
+    #     )
+
+
     ## 初始化model
     _LIB.LGBM_BoosterCreate(
             dataset,

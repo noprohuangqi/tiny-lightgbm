@@ -56,7 +56,7 @@ public:
 	static Bin* CreateBin(int num_data, int num_bin);
 
 
-	virtual void Push(int idx, int value) {};
+	virtual void Push(int idx, int value) = 0;
 
 private:
 

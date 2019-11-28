@@ -22,8 +22,8 @@ Dataset::Dataset() {}
 Dataset::Dataset(int num_data) {
 	num_data_ = num_data;
 
-
-
+	//??????
+	group_bin_boundaries.push_back(0);
 }
 
 
@@ -111,8 +111,18 @@ void Dataset::Construct(std::vector<std::unique_ptr<BinMapper>>& bin_mappers,
 		}
 	}
 
+}
 
 
+
+bool Dataset::SetFloatField(const float* label) {
+
+
+	metadata_.SetLabel(label , num_data_);
+
+
+
+	return true;
 
 }
 

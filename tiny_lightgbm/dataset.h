@@ -14,6 +14,17 @@
 
 namespace Tiny_LightGBM {
 
+
+class Metadata {
+
+public:
+
+	void SetLabel(const float* label , int len);
+private:
+	std::vector<float> label_;
+
+};
+
 class Dataset {
 public:
 
@@ -44,6 +55,8 @@ public:
 		}
 	}
 
+	bool SetFloatField(const float* label);
+
 
 private:
 
@@ -63,6 +76,8 @@ private:
 	std::vector<int> group_feature_start_;
 	std::vector<int> group_feature_cnt_;
 
+
+	Metadata metadata_;
 
 
 };
