@@ -40,7 +40,7 @@ public:
 			//更新值到某一group的顺序
 			const int sub_feature = feature2subfeature_[feature_idx];
 
-			feature
+			feature_groups_[group]->PushData(sub_feature, row_idx, feature_values[i]);
 		}
 	}
 

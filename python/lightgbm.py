@@ -52,6 +52,8 @@ def train(params , X_train , y_train):
             # params_c,
             ctypes.byref(model))
 
+
+    is_finished = ctypes.c_int(0)
     ## 训练model
     for i in range(100):
 

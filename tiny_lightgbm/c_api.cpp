@@ -16,6 +16,36 @@
 #include <functional>
 
 
+namespace Tiny_LightGBM {
+
+class Booster {
+public:
+	Booster(const Dataset* train_data) {
+
+		train_data_ = train_data;
+
+
+
+
+	}
+
+private:
+	const Dataset* train_data_;
+	std::unique_ptr<Boosting> boosting_;
+
+};
+
+}
+
+
+
+
+
+
+
+
+
+
 using namespace Tiny_LightGBM;
 
 
@@ -121,4 +151,12 @@ int LGBM_DatasetCreateFromMat(const void* data,
 
 	//Õý³£·µ»Ø
 	return 0;
+}
+
+int LGBM_BoosterCreate(const void* train_data ,
+					    void* out) {
+	const Dataset* p_train_data = reinterpret_cast<const Dataset*>(train_data);
+
+	auto ret = std::unique_ptr<Booster>(new Booster(p_train_data));
+	*out = ret.release();
 }

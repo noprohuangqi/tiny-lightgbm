@@ -54,6 +54,10 @@ class Bin {
 
 public:
 	static Bin* CreateBin(int num_data, int num_bin);
+
+
+	virtual void Push(int idx, int value) {};
+
 private:
 
 
@@ -67,7 +71,7 @@ public:
 	DenseBin(int num_data):num_data_(num_data),data_(num_data_ , 0){}
 
 
-	void Push(int idx, double value) {
+	void Push(int idx, int value) override{
 		data_[idx] = value;
 	}
 

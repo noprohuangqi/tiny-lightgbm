@@ -21,16 +21,52 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="c_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dataset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gbdt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="feature_group.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="tiny_lightgbm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="c_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dataset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="bin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="feature_group.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
