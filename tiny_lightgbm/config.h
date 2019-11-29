@@ -20,7 +20,9 @@ public:
 
 	static const int min_data_in_bin = 3;
 
+	
 
+	static const int num_leaves = 31;
 
 };
 

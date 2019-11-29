@@ -7,6 +7,7 @@
 #include "boosting.h"
 #include "objective_function.h"
 #include "metric.h"
+#include "regression_metric.hpp"
 
 
 #include <cstdio>
@@ -29,13 +30,27 @@ public:
 
 		boosting_.reset(Boosting::CreateBoosting());
 
+		CreateObjectiveAndMetrics();
 
+		boosting_->Init();
 
 
 	}
 
 
 	void CreateObjectiveAndMetrics() {
+
+		objective_fun_.reset(ObjectiveFunction::CreateObjectiveFunction());
+		objective_fun_->Init(train_data_->metadata(),train_data_->num_data());
+
+		train_metric_.clear();
+		auto metric = std::unique_ptr<Metric>(Metric::CreateMetric(1));
+		metric->Init(train_data_->metadata(), train_data_->num_data());
+
+		train_metric_.push_back(std::move(metric));
+
+		train_metric_.shrink_to_fit();
+
 
 	}
 
@@ -45,6 +60,7 @@ private:
 
 	std::unique_ptr<ObjectiveFunction> objective_fun_;
 
+	std::vector<std::unique_ptr<Metric>> train_metric_;
 };
 
 }
@@ -173,7 +189,7 @@ int LGBM_DatasetCreateFromMat(const void* data,
 }
 
 int LGBM_BoosterCreate(const void* train_data ,
-					    void* out) {
+					    void** out) {
 	const Dataset* p_train_data = reinterpret_cast<const Dataset*>(train_data);
 
 	auto ret = std::unique_ptr<Booster>(new Booster(p_train_data));

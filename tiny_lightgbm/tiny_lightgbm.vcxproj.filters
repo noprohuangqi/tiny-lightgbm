@@ -45,6 +45,21 @@
     <ClInclude Include="feature_group.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="boosting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="objective_function.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="metric.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regression_metric.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tree_learner.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +78,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="feature_group.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="boosting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="objective_function.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="metric.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="metadata.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gbdt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tree_learner.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="serial_tree_learner.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

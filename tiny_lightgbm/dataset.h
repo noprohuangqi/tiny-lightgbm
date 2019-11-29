@@ -20,6 +20,9 @@ class Metadata {
 public:
 
 	void SetLabel(const float* label , int len);
+
+	inline const float* label() const { return label_.data(); }
+
 private:
 	std::vector<float> label_;
 
@@ -56,6 +59,12 @@ public:
 	}
 
 	bool SetFloatField(const float* label);
+
+
+	inline const Metadata& metadata() const { return metadata_; }
+	inline int num_data() const { return num_data_; }
+
+	inline int num_features() const { return num_features_; }
 
 
 private:
