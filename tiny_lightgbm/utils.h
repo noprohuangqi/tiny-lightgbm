@@ -55,6 +55,12 @@ inline static double GetDoubleUpperBound(double a) {
 	return std::nextafter(a, INFINITY);	
 }
 
+template <typename T>
+static int Sign(T x) {
+	return (x > T(0)) - (x < T(0));
+}
+
+
 
 }
 }

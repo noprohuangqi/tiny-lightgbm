@@ -7,6 +7,12 @@
 namespace Tiny_LightGBM {
 
 
+
+struct  HistogramBinEntry{
+
+};
+
+
 //实现将原始feature分布进行装桶，bins = 255
 class BinMapper {
 
@@ -17,7 +23,7 @@ public:
 
 	void FindBin(double* values, int num_values, int num_row);
 
-	inline int num_bin() const { return num_bin_ };
+	inline int num_bin() const { return num_bin_; }
 
 	inline int ValueToBin(double value) const;
 

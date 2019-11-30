@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dataset.h"
+#include "feature_histogram.hpp"
 
 
 namespace Tiny_LightGBM {
@@ -24,6 +25,8 @@ protected:
 	const Dataset* train_data_;
 	int num_data_;
 	int num_features_;
+
+	HistogramPool histogram_pool_;
 
 
 

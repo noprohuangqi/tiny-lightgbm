@@ -66,6 +66,35 @@ public:
 
 	inline int num_features() const { return num_features_; }
 
+	inline int FeatureNumBin(int i) const {
+		const int group = feature2group_[i];
+		const int sub_feature = feature2subfeature_[i];
+
+		return feature_groups_[group]->bin_mappers_[sub_feature]->num_bin();
+
+	}
+
+	inline const BinMapper* FeatureBinMapper(int i) const {
+		const int group = feature2group_[i];
+		const int sub_feature = feature2subfeature_[i];
+
+		return feature_groups_[group]->bin_mappers_[sub_feature].get();
+	}
+
+	inline int NumTotalBin() const {
+		return group_bin_boundaries_.back();
+	}
+
+	inline int SubFeatureBinOffset(int i) const {
+		const int sub_feature = feature2subfeature_[i];
+
+		if (sub_feature == 0) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
 
 private:
 
@@ -80,7 +109,7 @@ private:
 
 	std::vector<std::unique_ptr<FeatureGroup>> feature_groups_;
 
-	std::vector<int> group_bin_boundaries;
+	std::vector<int> group_bin_boundaries_;
 
 	std::vector<int> group_feature_start_;
 	std::vector<int> group_feature_cnt_;

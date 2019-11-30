@@ -23,7 +23,7 @@ Dataset::Dataset(int num_data) {
 	num_data_ = num_data;
 
 	//??????
-	group_bin_boundaries.push_back(0);
+	group_bin_boundaries_.push_back(0);
 }
 
 
@@ -86,12 +86,12 @@ void Dataset::Construct(std::vector<std::unique_ptr<BinMapper>>& bin_mappers,
 	}
 
 	feature_groups_.shrink_to_fit();
-	group_bin_boundaries.clear();
+	group_bin_boundaries_.clear();
 	int num_total_bin = 0;
 
 	for (int i = 0; i < num_groups_; ++i) {
 		num_total_bin += feature_groups_[i]->num_total_bin_;
-		group_bin_boundaries.push_back(num_total_bin);
+		group_bin_boundaries_.push_back(num_total_bin);
 	}
 	int last_group = 0;
 	group_feature_start_.reserve(num_groups_);

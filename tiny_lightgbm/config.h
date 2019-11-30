@@ -24,6 +24,17 @@ public:
 
 	static const int num_leaves = 31;
 
+	//这个参数控制叶子最大输出 ， 默认没有限制，为0
+	static const double max_delta_step;
+
+	//以下两个都是0，默认无限制
+	//l1,l2分别对应gradient和hessian的约束
+	static const double lambda_l1;
+	static const double lambda_l2;
+
+
+	double min_gain_to_split = 0.0;
+
 };
 
 
