@@ -66,6 +66,15 @@
     <ClInclude Include="split_info.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="leaf_splits.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="data_partition.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="score_updater.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

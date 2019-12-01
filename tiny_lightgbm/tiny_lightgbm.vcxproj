@@ -152,13 +152,16 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="c_api.h" />
     <ClInclude Include="dataset.h" />
+    <ClInclude Include="data_partition.hpp" />
     <ClInclude Include="define.h" />
     <ClInclude Include="feature_group.h" />
     <ClInclude Include="feature_histogram.hpp" />
     <ClInclude Include="gbdt.h" />
+    <ClInclude Include="leaf_splits.hpp" />
     <ClInclude Include="metric.h" />
     <ClInclude Include="objective_function.h" />
     <ClInclude Include="regression_metric.hpp" />
+    <ClInclude Include="score_updater.hpp" />
     <ClInclude Include="split_info.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
