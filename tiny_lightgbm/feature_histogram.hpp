@@ -2,6 +2,7 @@
 
 #include "bin.h"
 #include "split_info.hpp"
+#include  "utils.h"
 
 namespace Tiny_LightGBM {
 
@@ -20,22 +21,20 @@ public:
 		meta_ = meta;
 		data_ = data;
 
-		find_best_threshold_fun_ = std::bind();
+		find_best_threshold_fun_ = std::bind(&FeatureHistogram::FindBestThresholdNumerical , this ,
+											std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, 
+											std::placeholders::_4, std::placeholders::_5, std::placeholders::_6);
 
 	}
 
 	static double ThresholdL1(double s, double l1) {
 		const double reg_s = std::max(0.0, std::fabs(s) - l1);
-
 		return Utils::Sign(s) *reg_s;
 	}
 
 	static double CalculateSplittedLeafOutput(double sum_gradients, double sum_hessians, double l1, double l2, double max_delta_step) {
-
 		double ret = -ThresholdL1(sum_gradients, l1) / (sum_hessians + l2);
 		return ret;
-
-
 	}
 
 	static double GetLeafSplitGain(double sum_gradients, double sum_hessians, double l1, double l2, double max_delta_step) {
@@ -57,6 +56,7 @@ public:
 									int dir , bool skip_default_bin , bool use_na_sa_missing) {
 
 
+
 	}
 
 	void FindBestThresholdNumerical(double sum_gradient , double sum_hessian , 
@@ -64,14 +64,10 @@ public:
 									double max_constraint , SplitInfo* output) {
 
 		is_splittable_ = false;
-
 		//参数分别是l1 ， l2 ， max_delta_step
 		double gain_shift = GetLeafSplitGain(sum_gradient, sum_hessian, 0.0, 0.0, 0.0);
-
-
 		//double min_gain_to_split = 0.0;
 		double min_gain_shift = gain_shift + 0.0;
-
 		FindBsetThresholdSequence(sum_gradient, sum_hessian, num_data, min_constraint, max_constraint, min_gain_shift, output, -1, false, false);
 
 

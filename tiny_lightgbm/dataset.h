@@ -96,6 +96,25 @@ public:
 		}
 	}
 
+	inline void CreateOrderedBins(std::vector<std::unique_ptr<OrderedBin>>* ordered_bins ) const {
+
+		ordered_bins->resize(num_groups_);
+		for (int i = 0; i < num_groups_; ++i) {
+			ordered_bins->at(i).reset(feature_groups_[i]->bin_data_->CreateOrderedBin());
+		}
+	}
+
+	inline std::vector<int> ValidFeatureIndices() const {
+		std::vector<int> ret;
+		for (int i = 0; i < num_total_features_; ++i) {
+			if (used_feature_map_[i] >= 0) {
+				ret.push_back(i);
+			}
+		}
+		return ret;
+
+	}
+
 private:
 
 	int num_data_;

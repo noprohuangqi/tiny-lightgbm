@@ -32,7 +32,7 @@ public:
 
 		CreateObjectiveAndMetrics();
 
-		boosting_->Init();
+		boosting_->Init(train_data_ ,objective_fun_.get(),Utils::ConstPtrInVectorWrapper<Metric>(train_metric_) );
 
 
 	}

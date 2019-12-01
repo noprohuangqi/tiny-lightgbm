@@ -56,6 +56,14 @@ inline int BinMapper::ValueToBin(double value) const {
 
 }
 
+class OrderedBin {
+
+public:
+private:
+
+};
+
+
 class Bin {
 
 public:
@@ -63,6 +71,8 @@ public:
 
 
 	virtual void Push(int idx, int value) = 0;
+
+	virtual OrderedBin* CreateOrderedBin() const = 0;
 
 private:
 
@@ -81,6 +91,8 @@ public:
 		data_[idx] = value;
 	}
 
+	//这里是说，dense的情况下就不需要排序了
+	OrderedBin* CreateOrderedBin() const override { return nullptr; }
 
 private:
 
