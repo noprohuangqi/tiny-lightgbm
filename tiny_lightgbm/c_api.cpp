@@ -54,6 +54,11 @@ public:
 
 	}
 
+	bool TrainOneIter() {
+
+		return boosting_->TrainOneIter(nullptr, nullptr);
+	}
+
 private:
 	const Dataset* train_data_;
 	std::unique_ptr<Boosting> boosting_;
@@ -195,3 +200,6 @@ int LGBM_BoosterCreate(const void* train_data ,
 	auto ret = std::unique_ptr<Booster>(new Booster(p_train_data));
 	*out = ret.release();
 }
+
+
+

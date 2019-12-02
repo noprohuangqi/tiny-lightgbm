@@ -46,5 +46,18 @@ void GBDT::Init(const Dataset* train_data,
 }
 
 
+bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
+
+	//
+	// 省略了baggin的操作
+	//
+	// 0.0 默认就是double ， 不需要类型转换。0.0f默认就是float
+	std::vector<double> init_scores(num_tree_per_iteration_, 0.0);
+
+
+
+
+}
+
 
 }

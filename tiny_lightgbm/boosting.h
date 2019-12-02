@@ -17,7 +17,7 @@ public:
 	virtual void Init(const Dataset* train_data ,
 		              const ObjectiveFunction* objective_function,
 					 const std::vector<const Metric*>& training_metrics) = 0;
-
+	virtual bool TrainOneIter(const float* gradients, const float* hessians) = 0;
 private:
 
 };
@@ -32,6 +32,8 @@ public:
 		const std::vector<const Metric*>& training_metrics) override;
 
 
+
+	virtual bool TrainOneIter(const float* gradients, const float* hessians) override;
 
 private:
 
