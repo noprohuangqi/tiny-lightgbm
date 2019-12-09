@@ -35,6 +35,8 @@ public:
 
 	double min_gain_to_split = 0.0;
 
+	static const int min_data_in_leaf = 20;
+
 };
 
 

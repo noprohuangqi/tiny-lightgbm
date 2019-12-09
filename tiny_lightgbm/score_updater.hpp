@@ -22,6 +22,9 @@ public:
 		//省略了部分内容
 	}
 
+	inline bool has_init_score() const { return has_init_score_; }
+
+
 private:
 	int num_data_;
 	const Dataset* data_;

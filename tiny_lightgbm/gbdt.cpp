@@ -54,10 +54,38 @@ bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
 	// 0.0 默认就是double ， 不需要类型转换。0.0f默认就是float
 	std::vector<double> init_scores(num_tree_per_iteration_, 0.0);
 
+	for (int cur_tree_id = 0; cur_tree_id < num_tree_per_iteration_; ++cur_tree_id) {
 
+		//init_scores[cur_tree_id] = BoostFromAverage(cur_tree_id, true);
+
+	}
+	Boosting();
 
 
 }
+
+void GBDT::Boosting() {
+
+	int num_score = 0;
+
+	objective_function_->GetGradients()
+
+}
+
+double GBDT::BoostFromAverage(int class_id, bool update_scorer) {
+
+	if (models_.empty() && !train_score_updater_->has_init_score()) {
+
+		double init_score = 0.0;
+
+
+
+	}
+
+
+	return 0.0f;
+}
+
 
 
 }

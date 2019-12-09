@@ -5,7 +5,7 @@
 #include "metric.h"
 #include "tree_learner.h"
 #include "score_updater.hpp"
-
+#include "tree.h"
 
 namespace Tiny_LightGBM {
 
@@ -35,6 +35,10 @@ public:
 
 	virtual bool TrainOneIter(const float* gradients, const float* hessians) override;
 
+	double BoostFromAverage(int class_id, bool update_scorer);
+
+	void Boosting();
+
 private:
 
 	const Dataset* train_data_;
@@ -62,7 +66,7 @@ private:
 
 	std::vector<bool> class_need_train_;
 
-
+	std::vector<std::unique_ptr<Tree>> models_;
 
 };
 

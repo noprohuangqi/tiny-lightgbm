@@ -36,7 +36,17 @@ public:
 		double ret = -ThresholdL1(sum_gradients, l1) / (sum_hessians + l2);
 		return ret;
 	}
-
+	static double CalculateSplittedLeafOutput(double sum_gradients, double sum_hessians, double l1, double l2, double max_delta_step,
+		double min_constraint, double max_constraint) {
+		double ret = CalculateSplittedLeafOutput(sum_gradients, sum_hessians, l1, l2, max_delta_step);
+		if (ret < min_constraint) {
+			ret = min_constraint;
+		}
+		else if (ret > max_constraint) {
+			ret = max_constraint;
+		}
+		return ret;
+	}
 	static double GetLeafSplitGain(double sum_gradients, double sum_hessians, double l1, double l2, double max_delta_step) {
 
 		double output = CalculateSplittedLeafOutput(sum_gradients, sum_hessians, l1, l2, max_delta_step);
@@ -50,11 +60,79 @@ public:
 		return -(2.0 * sg_l1 * output + (sum_hessians + l2)*output*output);
 	}
 
+	static double GetSplitGains(double sum_left_gradients, double sum_left_hessians,
+								double sum_right_gradients, double sum_right_hessians,
+								double l1, double l2, double max_delta_step,
+								double min_constraint, double max_constraint, int monotone_constaint) {
+
+		double left_output = CalculateSplittedLeafOutput(sum_left_gradients, sum_left_hessians, l1, l2, max_delta_step ,  min_constraint, max_constraint);
+		double right_output = CalculateSplittedLeafOutput(sum_right_gradients, sum_right_hessians, l1, l2, max_delta_step, min_constraint, max_constraint);
+
+		return GetLeafSplitGainGivenOutput(sum_left_gradients, sum_left_hessians, l1, l2, left_output)
+			+ GetLeafSplitGainGivenOutput(sum_right_gradients, sum_right_hessians, l1, l2, right_output);
+
+	}
+
 	void FindBsetThresholdSequence(double sum_gradient , double sum_hessian , int num_data ,
 									double min_constraint , double max_constraint,
 									double min_gain_shift , SplitInfo* output , 
 									int dir , bool skip_default_bin , bool use_na_sa_missing) {
 
+		const int bias = meta_->bias;
+		double best_sum_left_gradient = NAN;
+		double best_sum_left_hessian = NAN;
+		double best_gain = -std::numeric_limits<float>::infinity();
+
+		int best_left_count = 0;
+		int best_threshold = meta_->num_bin;
+
+		//开始从右到左
+		double sum_right_gradient = 0.0f;
+		double sum_right_hessian = -std::numeric_limits<float>::infinity();
+		int right_count = 0;
+
+		int t = meta_->num_bin - 1 - bias - use_na_sa_missing;
+		int t_end = 1 - bias;
+
+		for (; t >= t_end; --t) {
+
+			sum_right_gradient += data_[t].sum_gradients;
+			sum_right_hessian += data_[t].sum_hessians;
+			right_count += data_[t].cnt;
+
+			//1e-3是超参，即min_sum_hessian_in_leaf
+			if (right_count < Config::min_data_in_leaf || sum_right_hessian < 1e-3) continue;
+			int left_count = num_data - right_count;
+
+			if (left_count < Config::min_data_in_leaf) break;
+
+			double sum_left_hessian = sum_hessian - sum_right_hessian;
+
+			if (sum_left_hessian < 1e-3) break;
+
+			double sum_left_gradient = sum_gradient - sum_right_gradient;
+
+			double current_gain = GetSplitGains(sum_left_gradient, sum_left_hessian, sum_right_gradient, sum_right_hessian,
+												0.0, 0.0, 0.0,
+												min_constraint, max_constraint, 0.0);
+			if (current_gain <= min_gain_shift) continue;
+
+			is_splittable_ = true;
+			if (current_gain > best_gain) {
+				best_left_count = left_count;
+				best_sum_left_gradient = sum_left_gradient;
+				best_sum_left_hessian = sum_left_hessian;
+
+				best_threshold = static_cast<int>(t - 1 + bias);
+				best_gain = current_gain;
+
+			}
+
+
+
+
+
+		}
 
 
 	}
@@ -65,9 +143,12 @@ public:
 
 		is_splittable_ = false;
 		//参数分别是l1 ， l2 ， max_delta_step
+		//计算分裂之前的熵值
 		double gain_shift = GetLeafSplitGain(sum_gradient, sum_hessian, 0.0, 0.0, 0.0);
 		//double min_gain_to_split = 0.0;
 		double min_gain_shift = gain_shift + 0.0;
+
+		//这里不处理空值，不然的话应该是左右两边扫描，将空值放到左右两边对比效果
 		FindBsetThresholdSequence(sum_gradient, sum_hessian, num_data, min_constraint, max_constraint, min_gain_shift, output, -1, false, false);
 
 

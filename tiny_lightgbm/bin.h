@@ -9,7 +9,10 @@ namespace Tiny_LightGBM {
 
 
 struct  HistogramBinEntry{
-
+public:
+	double sum_gradients = 0.0f;
+	double sum_hessians = 0.0f;
+	int cnt = 0;
 };
 
 

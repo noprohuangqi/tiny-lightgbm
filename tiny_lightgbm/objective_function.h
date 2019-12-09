@@ -17,6 +17,7 @@ public:
 
 	virtual void Init(const Metadata& metadata, int num_data) = 0;
 
+	virtual void GetGradients(const double* score, float* graddients, float* hessians)const =0;
 
 
 };
@@ -26,6 +27,15 @@ class RegressionL2loss :public ObjectiveFunction {
 
 public:
 	void Init(const Metadata& metadata, int num_data) override {};
+
+	void GetGradients(const double* score, float* gradients, float* hessians) const override{
+
+		for (int i = 0; i < num_data_; ++i) {
+			gradients[i] = static_cast<float>(score[i] - label_[i]);
+			hessians[i] = 1.0f;
+		}
+
+	}
 
 
 //提供给派生类
