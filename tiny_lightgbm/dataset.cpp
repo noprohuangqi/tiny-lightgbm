@@ -74,9 +74,9 @@ void Dataset::Construct(std::vector<std::unique_ptr<BinMapper>>& bin_mappers,
 			used_feature_map_[real_fidx] = cur_fidx;
 			real_feature_idx_[cur_fidx] = real_fidx;
 			feature2group_[cur_fidx] = i;
-			feature2subfeature_[cur_fidx] = j;
-			cur_bin_mappers.emplace_back(bin_mappers[real_fidx].release());
-			++cur_fidx;
+feature2subfeature_[cur_fidx] = j;
+cur_bin_mappers.emplace_back(bin_mappers[real_fidx].release());
+++cur_fidx;
 		}
 
 		feature_groups_.emplace_back(
@@ -118,11 +118,70 @@ void Dataset::Construct(std::vector<std::unique_ptr<BinMapper>>& bin_mappers,
 bool Dataset::SetFloatField(const float* label) {
 
 
-	metadata_.SetLabel(label , num_data_);
+	metadata_.SetLabel(label, num_data_);
 
 
 
 	return true;
+
+}
+
+void Dataset::ConstructHistograms(const std::vector<int>& is_feature_used,
+	const int* data_indices, int num_data,
+	int leaf_idx,
+	std::vector<std::unique_ptr<OrderedBin>>& ordered_bins,
+	const float* gradients, const float* hessians,
+	float* ordered_gradients, float* ordered_hessians,
+	bool is_constant_hessian,
+	HistogramBinEntry* hist_data) const {
+
+	if (leaf_idx < 0 || num_data < 0 || hist_data == nullptr) { return; }
+
+	std::vector<int> used_group;
+	used_group.reserve(num_groups_);
+
+	for (int group = 0; group < num_groups_; ++group) {
+		const int f_cnt = group_feature_cnt_[group];
+		bool is_group_used = false;
+
+		for (int j = 0; j < f_cnt; ++j) {
+			const int fidx = group_feature_start_[group] + j;
+			if (is_feature_used[fidx]) {
+				is_group_used = true;
+				break;
+			}
+		}
+		if (is_group_used) {
+			used_group.push_back(group);
+		}
+	}
+	int num_used_group = static_cast<int>(used_group.size());
+	auto ptr_ordered_grad = gradients;
+	auto ptr_ordered_hess = hessians;
+
+	for (int i = 0; i < num_data; ++i) {
+		ordered_gradients[i] = gradients[data_indices[i]];
+	}
+	ptr_ordered_grad = ordered_gradients;
+	ptr_ordered_hess = ordered_hessians;
+
+	for (int gi = 0; gi < num_used_group; ++gi) {
+		int group = used_group[gi];
+		auto data_ptr = hist_data + group_bin_boundaries_[group];
+		const int num_bin = feature_groups_[group]->num_total_bin_;
+
+		std::memset((void*)(data_ptr + 1), 0, (num_bin - 1) * sizeof(HistogramBinEntry));
+
+		feature_groups_[group]->bin_data_->ConstructHistogram(data_indices, num_data, ptr_ordered_grad, data_ptr);
+
+		for (int i = 0; i < num_bin; ++i) {
+
+			data_ptr[i].sum_hessians = data_ptr[i].cnt * hessians[0];
+		}
+
+
+	}
+
 
 }
 

@@ -154,6 +154,16 @@ public:
 
 	}
 
+
+	bool is_splittable() { return is_splittable_; }
+	void set_is_splittable(bool val) { is_splittable_ = val; }
+
+	HistogramBinEntry* RawData() {
+
+		return data_;
+	}
+
+
 private:
 
 	bool is_splittable_;
@@ -231,6 +241,18 @@ public:
 
 	}
 
+	void ResetMap() {
+
+
+		
+
+	}
+	bool Get(int idx, FeatureHistogram** out) {
+		*out = pool_[idx].get();
+		return true;
+	}
+
+	
 
 private:
 	int cache_size_;

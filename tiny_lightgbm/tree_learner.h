@@ -4,6 +4,7 @@
 #include "feature_histogram.hpp"
 #include "leaf_splits.hpp"
 #include "data_partition.hpp"
+#include "tree.h"
 
 
 
@@ -18,6 +19,8 @@ public:
 
 	virtual void Init(const Dataset* train_data) = 0;
 
+	
+
 };
 
 
@@ -26,6 +29,10 @@ public:
 	void Init(const Dataset* train_data) override;
 
 protected:
+
+	virtual void ConstructHistograms(const std::vector<int>& is_feature_used, bool use_substract);
+	virtual void FindBestSplitsFromHistograms(const std::vector<int>& is_feature_used, bool use_subtract);
+
 
 	const Dataset* train_data_;
 	int num_data_;
@@ -50,8 +57,36 @@ protected:
 	std::vector<float> ordered_gradients_;
 	std::vector<float> ordered_hessians_;
 
+	FeatureHistogram* smaller_leaf_histogram_array_;
+	FeatureHistogram* larger_leaf_histogram_array_;
+	FeatureHistogram* parent_leaf_histogram_array_;
+
+
+	const float* gradients_;
+	const float* hessians_;
+	bool is_constant_hessian_;
+
+	Tree* Train(const float* gradients , const float* hessians , bool is_constant_hessian);
+
+	virtual void BeforeTrain();
+
+	virtual bool BeforeFindBsetSplit(const Tree* tree, int left_leaf, int right_leaf);
+
+	inline virtual int GetGlobalDataCountInLeaf(int leaf_idx) const;
+
+	virtual void FindBestSplits();
 
 };
+
+inline int SerialTreeLearner::GetGlobalDataCountInLeaf(int leaf_idx) const {
+
+	if (leaf_idx >= 0) {
+		return data_partition_->leaf_count(leaf_idx);
+	}
+	else {
+		return 0;
+	}
+}
 
 
 

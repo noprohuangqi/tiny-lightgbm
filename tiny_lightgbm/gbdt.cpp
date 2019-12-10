@@ -16,6 +16,7 @@ void GBDT::Init(const Dataset* train_data,
 
 	objective_function_ = objective_function;
 	num_tree_per_iteration_ = 1;
+	is_constant_hessian_ = true;
 
 	tree_learner_ = std::unique_ptr<TreeLearner>(TreeLearner::CreateTreeLearner());
 
@@ -60,6 +61,24 @@ bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
 
 	}
 	Boosting();
+	gradients = gradients_.data();
+	hessians = hessians_.data();
+
+	//Ê¡ÂÔbagging²Ù×÷
+
+	bool should_continue = false;
+	for (int cur_tree_id = 0; cur_tree_id < num_tree_per_iteration_; ++cur_tree_id){
+		const int bias = cur_tree_id * num_data_;
+		std::unique_ptr<Tree> new_tree(new Tree(2));
+		
+		auto grad = gradients + bias;
+
+		auto hess = hessians + bias;
+
+		new_tree.reset(tree_learner_->)
+
+
+	}
 
 
 }
@@ -68,21 +87,24 @@ void GBDT::Boosting() {
 
 	int num_score = 0;
 
-	objective_function_->GetGradients()
+	objective_function_->GetGradients(GetTrainingScore(&num_score), gradients_.data(), hessians_.data());
 
 }
+
+const double* GBDT::GetTrainingScore(int* out_len) {
+
+	return train_score_updater_->score();
+
+
+}
+
 
 double GBDT::BoostFromAverage(int class_id, bool update_scorer) {
 
 	if (models_.empty() && !train_score_updater_->has_init_score()) {
 
 		double init_score = 0.0;
-
-
-
 	}
-
-
 	return 0.0f;
 }
 

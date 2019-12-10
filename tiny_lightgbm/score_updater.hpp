@@ -24,6 +24,7 @@ public:
 
 	inline bool has_init_score() const { return has_init_score_; }
 
+	inline const double* score() const { return score_.data(); }
 
 private:
 	int num_data_;

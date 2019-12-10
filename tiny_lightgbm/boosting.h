@@ -18,6 +18,9 @@ public:
 		              const ObjectiveFunction* objective_function,
 					 const std::vector<const Metric*>& training_metrics) = 0;
 	virtual bool TrainOneIter(const float* gradients, const float* hessians) = 0;
+	
+	virtual const double* GetTrainingScore(int* out_len) = 0;
+
 private:
 
 };
@@ -39,6 +42,8 @@ public:
 
 	void Boosting();
 
+	const double* GetTrainingScore(int* out_len) override;
+
 private:
 
 	const Dataset* train_data_;
@@ -51,6 +56,8 @@ private:
 
 	std::vector<const Metric*> training_metrics_;
 	int num_tree_per_iteration_ = 1;
+
+	bool is_constant_hessian_;
 
 	std::unique_ptr<ScoreUpdater> train_score_updater_;
 

@@ -283,4 +283,15 @@ namespace Tiny_LightGBM {
 
 	}
 
+
+	void DenseBin::ConstructHistogram(const int* data_indices, int num_data, const float* ordered_gradients, HistogramBinEntry* out) const override{
+
+		for (int i = 0; i < num_data; ++i) {
+			const int bin = data_[data_indices[i]];
+			out[bin].sum_gradients += ordered_gradients[i];
+			++out[bin].cnt;
+		}
+
+	}
+
 }

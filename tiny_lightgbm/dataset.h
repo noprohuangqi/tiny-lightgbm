@@ -45,6 +45,15 @@ public:
 					const int* num_per_col,
 					int nuim_row);
 
+	void ConstructHistograms(const std::vector<int>& is_feature_used,
+							const int* data_indices, int num_data,
+							int leaf_idx,
+							std::vector<std::unique_ptr<OrderedBin>>& ordered_bins,
+							const float* gradients , const float* hessians,
+							float* ordered_gradients, float* ordered_hessians,
+							bool is_constant_hessian,
+							HistogramBinEntry* hist_data) const;
+
 	inline void PushOneRow(int row_idx, const std::vector<double>& feature_values) {
 
 		for (size_t i = 0; i < feature_values.size(); ++i) {

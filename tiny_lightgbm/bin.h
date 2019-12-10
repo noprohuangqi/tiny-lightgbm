@@ -76,7 +76,7 @@ public:
 	virtual void Push(int idx, int value) = 0;
 
 	virtual OrderedBin* CreateOrderedBin() const = 0;
-
+	virtual void ConstructHistogram(const int* data_indices, int num_data, const float* ordered_gradients, HistogramBinEntry* out) const;
 private:
 
 
@@ -96,6 +96,8 @@ public:
 
 	//这里是说，dense的情况下就不需要排序了
 	OrderedBin* CreateOrderedBin() const override { return nullptr; }
+
+	void ConstructHistogram(const int* data_indices, int num_data, const float* ordered_gradients, HistogramBinEntry* out) const override;
 
 private:
 
