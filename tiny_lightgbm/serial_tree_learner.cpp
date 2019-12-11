@@ -59,12 +59,27 @@ Tree* SerialTreeLearner::Train(const float* gradients, const float* hessians, bo
 
 		if (BeforeFindBsetSplit(tree.get(), left_leaf, right_leaf)) {
 
-			
+			FindBestSplits();
 		}
+		int best_leaf = static_cast<int>(Utils::ArgMax(best_split_per_leaf_));
+		const SplitInfo& best_leaf_SplitInfo = best_split_per_leaf_[best_leaf];
+
+		if (best_leaf_SplitInfo.gain <= 0.0) {
+			break;
+		}
+
+
 
 
 	}
 
+	return tree.release();
+
+
+
+}
+
+void SerialTreeLearner::Split(Tree* tree, int best_leaf, int* left_leaf, int* right_leaf) {
 
 
 
@@ -98,6 +113,39 @@ void SerialTreeLearner::FindBestSplitsFromHistograms(const std::vector<int>& is_
 	std::vector<SplitInfo> smaller_best(1);
 	std::vector<SplitInfo> larger_best(1);
 
+	for (int feature_index = 0; feature_index < num_features_; ++feature_index) {
+
+		SplitInfo smaller_split;
+		train_data_->FixHistogram(feature_index,
+									smaller_leaf_splits_->sum_gradients(), smaller_leaf_splits_->sum_hessians(),
+									smaller_leaf_splits_->num_data_in_leaf(),
+									smaller_leaf_histogram_array_[feature_index].RawData());
+		int real_fidx = train_data_->RealFeatureIndex(feature_index);
+		smaller_leaf_histogram_array_[feature_index].FindBestThreshold(smaller_leaf_splits_->sum_gradients(),
+												smaller_leaf_splits_->sum_hessians(),
+												smaller_leaf_splits_->num_data_in_leaf(),
+												smaller_leaf_splits_->min_constraint(),
+												smaller_leaf_splits_->max_constraint(),
+												&smaller_split);
+
+		smaller_split.feature = real_fidx;
+		if (smaller_split > smaller_best[0]) {
+			smaller_best[0] = smaller_split;
+		}
+
+
+
+	}
+
+	auto smaller_best_idx = Utils::ArgMax(smaller_best);
+	int leaf = smaller_leaf_splits_->LeafIndex();
+	best_split_per_leaf_[leaf] = smaller_best[smaller_best_idx];
+
+	if (larger_leaf_splits_ != nullptr && larger_leaf_splits_->LeafIndex() >= 0) {
+		leaf = larger_leaf_splits_->LeafIndex();
+		auto larger_best_idx = Utils::ArgMax(larger_best);
+		best_split_per_leaf_[leaf] = larger_best[larger_best_idx];
+	}
 
 
 
@@ -161,12 +209,23 @@ bool SerialTreeLearner::BeforeFindBsetSplit(const Tree* tree, int left_leaf, int
 		larger_leaf_histogram_array_ = nullptr;
 	}
 	else if (num_data_in_left_child < num_data_in_right_child) {
-		if (histogram_pool_.Get(left_leaf)) {
 
+		// 通过swap操作，实现了左右树的交换
+		if (histogram_pool_.Get(left_leaf , &larger_leaf_histogram_array_)) {
+			parent_leaf_histogram_array_ = larger_leaf_histogram_array_;
 		}
+		histogram_pool_.Move(left_leaf, right_leaf);
+		histogram_pool_.Get(left_leaf, &smaller_leaf_histogram_array_);
+	}
 
+	else {
+		if (histogram_pool_.Get(left_leaf, &larger_leaf_histogram_array_)) { 
+			parent_leaf_histogram_array_ = larger_leaf_histogram_array_; 
+		}
+		histogram_pool_.Get(right_leaf, &smaller_leaf_histogram_array_);
 
 	}
+
 	return true;
 
 

@@ -7,7 +7,8 @@ namespace Tiny_LightGBM {
 class LeafSplits {
 	
 public:
-
+	double min_constraint() const { return min_val_; }
+	double max_constraint() const { return max_val_; }
 	LeafSplits(int num_data) :num_data_in_leaf_(num_data), num_data_(num_data) ,data_indices_(nullptr){}
 
 	void Init() {
@@ -43,6 +44,8 @@ public:
 	const int* data_indices() const { return data_indices_; }
 	int num_data_in_leaf() const { return num_data_in_leaf_; }
 	int LeafIndex() const { return leaf_index_; }
+	double sum_gradients() const { return sum_gradients_; }
+	double sum_hessians() const { return sum_hessians_; }
 
 
 private:

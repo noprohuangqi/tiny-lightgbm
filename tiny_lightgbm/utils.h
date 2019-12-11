@@ -71,6 +71,26 @@ inline std::vector<const T*> ConstPtrInVectorWrapper(std::vector<std::unique_ptr
 	return ret;
 }
 
+template<typename T>
+inline static size_t ArgMax(const std::vector<T> &array) {
+
+	if (array.empty()) { return 0; }
+
+	size_t arg_max = 0;
+
+	for (size_t i = 0; i < array.size(); ++i) {
+		if (array[i] > array[arg_max]) {
+			arg_max = i;
+		}
+
+	}
+	return arg_max;
+
+
+}
+
+
+
 }
 }
 

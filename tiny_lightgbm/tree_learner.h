@@ -32,7 +32,7 @@ protected:
 
 	virtual void ConstructHistograms(const std::vector<int>& is_feature_used, bool use_substract);
 	virtual void FindBestSplitsFromHistograms(const std::vector<int>& is_feature_used, bool use_subtract);
-
+	virtual void Split(Tree* tree, int best_leaf, int* left_leaf, int* right_leaf);
 
 	const Dataset* train_data_;
 	int num_data_;

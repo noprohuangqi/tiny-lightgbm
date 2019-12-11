@@ -86,9 +86,9 @@ public:
 		int best_left_count = 0;
 		int best_threshold = meta_->num_bin;
 
-		//开始从右到左
+		//开始从右到左,dir控制
 		double sum_right_gradient = 0.0f;
-		double sum_right_hessian = -std::numeric_limits<float>::infinity();
+		double sum_right_hessian = 1e-15f;
 		int right_count = 0;
 
 		int t = meta_->num_bin - 1 - bias - use_na_sa_missing;
@@ -128,14 +128,31 @@ public:
 
 			}
 
-
-
-
-
+		}
+		if (is_splittable_ && best_gain > output->gain) {
+			output->threshold = best_threshold;
+			output->left_output = CalculateSplittedLeafOutput(best_sum_left_gradient, best_sum_left_hessian,
+									0.0, 0.0, 0.0,
+									min_constraint, max_constraint);
+			output->left_count = best_left_count;
+			output->left_sum_gradient = best_sum_left_gradient;
+			output->left_sum_hessian = best_sum_left_hessian - 1e-15f;
+			output->right_output = CalculateSplittedLeafOutput(sum_gradient - best_sum_left_gradient,
+								sum_hessian - best_sum_left_hessian,
+								0.0,0.0,0.0,
+								min_constraint, max_constraint);
+			output->right_count = num_data - best_left_count;
+			output->right_sum_gradient = sum_gradient - best_sum_left_gradient;
+			output->right_sum_hessian = sum_hessian - best_sum_left_hessian - 1e-15f;
+			output->gain = best_gain;
+			output->default_left = dir == -1;
 		}
 
 
 	}
+
+	
+
 
 	void FindBestThresholdNumerical(double sum_gradient , double sum_hessian , 
 									int num_data , double min_constraint , 
@@ -162,6 +179,18 @@ public:
 
 		return data_;
 	}
+
+
+	void FindBestThreshold(double sum_gradient, double sum_hessian, int num_data, double min_constraint, double max_constraint,
+							SplitInfo* output) {
+		output->default_left = true;
+		output->gain = -std::numeric_limits<float>::infinity();
+		find_best_threshold_fun_(sum_gradient, sum_hessian + 2 * 1e-15f, num_data, min_constraint, max_constraint, output);
+
+		// 1实际上是feature的penalty
+		output->gain *= 1;
+	}
+
 
 
 private:
@@ -252,7 +281,12 @@ public:
 		return true;
 	}
 
-	
+	void Move(int src_idx, int dst_idx) {
+
+		std::swap(pool_[src_idx], pool_[dst_idx]);
+		return;
+
+	}
 
 private:
 	int cache_size_;

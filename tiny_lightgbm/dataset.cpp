@@ -185,5 +185,28 @@ void Dataset::ConstructHistograms(const std::vector<int>& is_feature_used,
 
 }
 
+void Dataset::FixHistogram(int feature_idx, double sum_gradient, double sum_hessian, int num_data,
+							HistogramBinEntry* data) const {
+
+	const int group = feature2group_[feature_idx];
+	const int sub_feature = feature2subfeature_[feature_idx];
+	const BinMapper* bin_mapper = feature_groups_[group]->bin_mappers_[sub_feature].get();
+	const int default_bin = bin_mapper->GetDefaultBin();
+	if (default_bin > 0) {
+		const int num_bin = bin_mapper->num_bin();
+		data[default_bin].sum_gradients = sum_gradient;
+		data[default_bin].sum_hessians = sum_hessian;
+		data[default_bin].cnt = num_data;
+		for (int i = 0; i < num_bin; ++i) {
+			if (i != default_bin) {
+				data[default_bin].sum_gradients -= data[i].sum_gradients;
+				data[default_bin].sum_hessians -= data[i].sum_hessians;
+				data[default_bin].cnt -= data[i].cnt;
+			}
+		}
+	}
+}
+
+
 
 }

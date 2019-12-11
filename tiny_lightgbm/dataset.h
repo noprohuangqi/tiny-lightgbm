@@ -124,6 +124,12 @@ public:
 
 	}
 
+	void FixHistogram(int feature_idx, double sum_gradient, double sum_hessian, int num_data,
+		HistogramBinEntry* data) const;
+	inline int RealFeatureIndex(int fidx) const {
+		return real_feature_idx_[fidx];
+	}
+
 private:
 
 	int num_data_;

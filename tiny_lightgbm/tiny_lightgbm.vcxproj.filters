@@ -75,6 +75,9 @@
     <ClInclude Include="score_updater.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -114,6 +117,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="serial_tree_learner.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

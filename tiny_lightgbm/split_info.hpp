@@ -40,6 +40,65 @@ public:
 		feature = -1;
 		gain = -std::numeric_limits<float>::infinity();
 	}
+	inline bool operator > (const SplitInfo& si) const {
+		double local_gain = this->gain;
+		double other_gain = si.gain;
+		// replace nan with -inf
+		if (local_gain == NAN) {
+			local_gain = -std::numeric_limits<float>::infinity();;
+		}
+		// replace nan with -inf
+		if (other_gain == NAN) {
+			other_gain = -std::numeric_limits<float>::infinity();;
+		}
+		int local_feature = this->feature;
+		int other_feature = si.feature;
+		// replace -1 with max int
+		if (local_feature == -1) {
+			local_feature = INT32_MAX;
+		}
+		// replace -1 with max int
+		if (other_feature == -1) {
+			other_feature = INT32_MAX;
+		}
+		if (local_gain != other_gain) {
+			return local_gain > other_gain;
+		}
+		else {
+			// if same gain, use smaller feature
+			return local_feature < other_feature;
+		}
+	}
+
+	inline bool operator == (const SplitInfo& si) const {
+		double local_gain = this->gain;
+		double other_gain = si.gain;
+		// replace nan with -inf
+		if (local_gain == NAN) {
+			local_gain = -std::numeric_limits<float>::infinity();
+		}
+		// replace nan with -inf
+		if (other_gain == NAN) {
+			other_gain = -std::numeric_limits<float>::infinity();
+		}
+		int local_feature = this->feature;
+		int other_feature = si.feature;
+		// replace -1 with max int
+		if (local_feature == -1) {
+			local_feature = INT32_MAX;
+		}
+		// replace -1 with max int
+		if (other_feature == -1) {
+			other_feature = INT32_MAX;
+		}
+		if (local_gain != other_gain) {
+			return local_gain == other_gain;
+		}
+		else {
+			// if same gain, use smaller feature
+			return local_feature == other_feature;
+		}
+	}
 
 };
 
