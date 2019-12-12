@@ -36,6 +36,15 @@ public:
 		double ret = -ThresholdL1(sum_gradients, l1) / (sum_hessians + l2);
 		return ret;
 	}
+
+	/*实际上这个函数计算的是叶子的输出。
+	叶子的输出并不是简单的将节点上的值做一个平均，在xgboost或者
+	lightgbm的框架下，每个叶子的输出即 w 是确定的，有最佳的取值。
+	即最佳的损失函数，是有每个叶子的最佳化损失得来的。
+	在这种情况下，叶子的输出是sum_gradient / （sum_hessian + 正则）
+	这也是这里为什么这样安排函数的原因。将叶子输出单独安排，
+	将熵的计算另外安排
+	*/
 	static double CalculateSplittedLeafOutput(double sum_gradients, double sum_hessians, double l1, double l2, double max_delta_step,
 		double min_constraint, double max_constraint) {
 		double ret = CalculateSplittedLeafOutput(sum_gradients, sum_hessians, l1, l2, max_delta_step);

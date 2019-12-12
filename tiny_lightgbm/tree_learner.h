@@ -18,7 +18,7 @@ public:
 	static TreeLearner* CreateTreeLearner();
 
 	virtual void Init(const Dataset* train_data) = 0;
-
+	virtual Tree* Train(const float* gradients, const float* hessians, bool is_constant_hessian) = 0;
 	
 
 };
@@ -66,7 +66,7 @@ protected:
 	const float* hessians_;
 	bool is_constant_hessian_;
 
-	Tree* Train(const float* gradients , const float* hessians , bool is_constant_hessian);
+	Tree* Train(const float* gradients , const float* hessians , bool is_constant_hessian) override;
 
 	virtual void BeforeTrain();
 

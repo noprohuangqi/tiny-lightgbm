@@ -75,7 +75,9 @@ bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
 
 		auto hess = hessians + bias;
 
-		new_tree.reset(tree_learner_->)
+		new_tree.reset(tree_learner_->Train(grad, hess, is_constant_hessian_));
+
+
 
 
 	}
