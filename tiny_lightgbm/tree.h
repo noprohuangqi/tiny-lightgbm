@@ -10,6 +10,15 @@ public:
 
 	explicit Tree(int max_leaves) ;
 
+	inline void Split(int leaf, int feature, int real_feature,
+		double left_value, double right_value, int left_cnt, int right_cnt, float gain);
+
+	int Split(int leaf, int feature, int real_feature, int threshold_bin,
+		double threshold_double, double left_value, double right_value,
+		int left_cnt, int right_cnt, float gain, bool default_left);
+
+	inline int leaf_depth(int leaf_idx) const { return leaf_depth_[leaf_idx]; }
+
 private:
 	int max_leaves_;
 	int num_leaves_;
@@ -50,5 +59,38 @@ private:
 
 
 };
+
+inline void Tree::Split(int leaf, int feature, int real_feature,
+						double left_value, double right_value, int left_cnt, int right_cnt, float gain) {
+
+	int new_node_idx = num_leaves_ - 1;
+
+	int parent = leaf_parent_[leaf];
+
+	if (parent >= 0) {
+
+	}
+
+	split_feature_inner_[new_node_idx] = feature;
+	split_feature_[new_node_idx] = real_feature;
+
+	split_gain_[new_node_idx] = gain;
+	// add two new leaves
+	left_child_[new_node_idx] = ~leaf;
+	right_child_[new_node_idx] = ~num_leaves_;
+	// update new leaves
+	leaf_parent_[leaf] = new_node_idx;
+	leaf_parent_[num_leaves_] = new_node_idx;
+
+	internal_value_[new_node_idx] = leaf_value_[leaf];
+	internal_count_[new_node_idx] = left_cnt + right_cnt;
+	leaf_value_[leaf] = std::isnan(left_value) ? 0.0f : left_value;
+	leaf_count_[leaf] = left_cnt;
+	leaf_value_[num_leaves_] = std::isnan(right_value) ? 0.0f : right_value;
+	leaf_count_[num_leaves_] = right_cnt;
+	// update leaf depth
+	leaf_depth_[num_leaves_] = leaf_depth_[leaf] + 1;
+	leaf_depth_[leaf]++;
+}
 
 }

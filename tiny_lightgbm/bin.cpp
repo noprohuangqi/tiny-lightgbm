@@ -294,4 +294,38 @@ namespace Tiny_LightGBM {
 
 	}
 
+	int DenseBin::Split(uint32_t min_bin, uint32_t max_bin, uint32_t default_bin, bool default_left,
+						uint32_t threshold, int* data_indices, int num_data,
+						int* lte_indices, int* gt_indices) const {
+		if (num_data <= 0) { return 0; }
+		int th = static_cast<int>(threshold + min_bin);
+		const int minb = static_cast<int>(min_bin);
+		const int maxb = static_cast<int>(max_bin);
+		int t_default_bin = static_cast<int>(min_bin + default_bin);
+		if (default_bin == 0) {
+			th -= 1;
+			t_default_bin -= 1;
+		}
+		int lte_count = 0;
+		int gt_count = 0;
+		int* default_indices = gt_indices;
+		int* default_count = &gt_count;
+
+		for (int i = 0; i < num_data; ++i) {
+			const int idx = data_indices[i];
+			const int bin = data_[idx];
+			if (bin < minb || bin > maxb || t_default_bin == bin) {
+				default_indices[(*default_count)++] = idx;
+			}
+			else if (bin > th) {
+				gt_indices[gt_count++] = idx;
+			}
+			else {
+				lte_indices[lte_count++] = idx;
+			}
+		}
+
+
+	}
+
 }

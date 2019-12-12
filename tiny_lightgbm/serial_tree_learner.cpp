@@ -68,19 +68,52 @@ Tree* SerialTreeLearner::Train(const float* gradients, const float* hessians, bo
 			break;
 		}
 
-
-
+		Split(tree.get(), best_leaf, &left_leaf, &right_leaf);
+		cur_depth = std::max(cur_depth, tree->leaf_depth(left_leaf));
 
 	}
-
 	return tree.release();
-
-
-
 }
 
 void SerialTreeLearner::Split(Tree* tree, int best_leaf, int* left_leaf, int* right_leaf) {
 
+	const SplitInfo& best_split_info = best_split_per_leaf_[best_leaf];
+	const int inner_feature_index = train_data_->InnerFeatureIndex(best_split_info.feature);
+
+	//root的情况下，将best_leaf = 0赋给了leftleaf
+	*left_leaf = best_leaf;
+
+	auto threshold_double = train_data_->RealThreshold(inner_feature_index, best_split_info.threshold);
+	*right_leaf = tree->Split(best_leaf,
+								inner_feature_index,
+								best_split_info.feature,
+								best_split_info.threshold,
+								threshold_double,
+								static_cast<double>(best_split_info.left_output),
+								static_cast<double>(best_split_info.right_output),
+								static_cast<int>(best_split_info.left_count),
+								static_cast<int>(best_split_info.right_count),
+								static_cast<float>(best_split_info.gain),
+								best_split_info.default_left);
+	data_partition_->Split(best_leaf, train_data_, inner_feature_index,
+							&best_split_info.threshold, 1, best_split_info.default_left, *right_leaf);
+
+
+	auto p_left = smaller_leaf_splits_.get();
+	auto p_right = larger_leaf_splits_.get();
+	if (best_split_info.left_count < best_split_info.right_count) {
+		smaller_leaf_splits_->Init(*left_leaf, data_partition_.get(), best_split_info.left_sum_gradient, best_split_info.left_sum_hessian);
+		larger_leaf_splits_->Init(*right_leaf, data_partition_.get(), best_split_info.right_sum_gradient, best_split_info.right_sum_hessian);
+
+	}
+	else {
+		smaller_leaf_splits_->Init(*right_leaf, data_partition_.get(), best_split_info.right_sum_gradient, best_split_info.right_sum_hessian);
+		larger_leaf_splits_->Init(*left_leaf, data_partition_.get(), best_split_info.left_sum_gradient, best_split_info.left_sum_hessian);
+		p_right = smaller_leaf_splits_.get();
+		p_left = larger_leaf_splits_.get();
+	}
+	p_left->SetValueConstraint(best_split_info.min_constraint, best_split_info.max_constraint);
+	p_right->SetValueConstraint(best_split_info.min_constraint, best_split_info.max_constraint);
 
 
 }

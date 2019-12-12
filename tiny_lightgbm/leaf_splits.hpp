@@ -41,13 +41,26 @@ public:
 
 	}
 
+	void Init(int leaf, const DataPartition* data_partition, double sum_gradients, double sum_hessians) {
+		leaf_index_ = leaf;
+		data_indices_ = data_partition->GetIndexOnLeaf(leaf, &num_data_in_leaf_);
+		sum_gradients_ = sum_gradients;
+		sum_hessians_ = sum_hessians;
+		min_val_ = -std::numeric_limits<double>::max();
+		max_val_ = std::numeric_limits<double>::max();
+	}
+
+
 	const int* data_indices() const { return data_indices_; }
 	int num_data_in_leaf() const { return num_data_in_leaf_; }
 	int LeafIndex() const { return leaf_index_; }
 	double sum_gradients() const { return sum_gradients_; }
 	double sum_hessians() const { return sum_hessians_; }
 
-
+	void SetValueConstraint(double min, double max) {
+		min_val_ = min;
+		max_val_ = max;
+	}
 private:
 	int num_data_in_leaf_;
 	int num_data_;

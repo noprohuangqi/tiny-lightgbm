@@ -62,6 +62,24 @@ public:
 
 	}
 
+	inline int Split(
+		int sub_feature,
+		const uint32_t* threshold,
+		int num_threshold,
+		bool default_left,
+		int* data_indices, int num_data,
+		int* lte_indices, int* gt_indices) const {
+
+		uint32_t min_bin = bin_offsets_[sub_feature];
+		uint32_t max_bin = bin_offsets_[sub_feature + 1] - 1;
+		uint32_t default_bin = bin_mappers_[sub_feature]->GetDefaultBin();
+		
+			
+		return bin_data_->Split(min_bin, max_bin, default_bin, default_left,
+			*threshold, data_indices, num_data, lte_indices, gt_indices);
+		
+	}
+
 
 private:
 	std::vector<int> bin_offsets_;

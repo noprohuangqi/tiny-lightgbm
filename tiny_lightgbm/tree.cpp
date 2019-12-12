@@ -33,5 +33,14 @@ Tree::Tree(int max_leaves):max_leaves_(max_leaves) {
 
 }
 
+int Tree::Split(int leaf, int feature, int real_feature, int threshold_bin,
+					double threshold_double, double left_value, double right_value,
+					int left_cnt, int right_cnt, float gain, bool default_left) {
+
+	Split(leaf, feature, real_feature, left_value, right_value, left_cnt, right_cnt, gain);
+	++num_leaves_;
+	return num_leaves_ - 1;
+}
+
 
 }

@@ -33,6 +33,13 @@ public:
 	inline int GetDefaultBin() const {
 		return default_bin_;
 	}
+
+	inline double BinToValue(uint32_t bin) const {
+		
+		//默认是在numerical的情况下
+		return bin_upper_bound_[bin];
+		
+	}
 	
 private:
 	int num_bin_;
@@ -98,6 +105,12 @@ public:
 	OrderedBin* CreateOrderedBin() const override { return nullptr; }
 
 	void ConstructHistogram(const int* data_indices, int num_data, const float* ordered_gradients, HistogramBinEntry* out) const override;
+
+	int Split(
+		uint32_t min_bin, uint32_t max_bin, uint32_t default_bin, bool default_left,
+		uint32_t threshold, int* data_indices, int num_data,
+		int* lte_indices, int* gt_indices) const;
+
 
 private:
 

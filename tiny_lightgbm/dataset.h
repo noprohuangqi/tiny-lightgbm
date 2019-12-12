@@ -130,6 +130,25 @@ public:
 		return real_feature_idx_[fidx];
 	}
 
+	inline int InnerFeatureIndex(int col_idx) const {
+		return used_feature_map_[col_idx];
+	}
+
+	inline double RealThreshold(int i, int threshold) const {
+		const int group = feature2group_[i];
+		const int sub_feature = feature2subfeature_[i];
+		return feature_groups_[group]->bin_mappers_[sub_feature]->BinToValue(threshold);
+	}
+
+	inline int Split(int feature,
+								const uint32_t* threshold, int num_threshold, bool default_left,
+								int* data_indices, int num_data,
+								int* lte_indices, int* gt_indices) const {
+		const int group = feature2group_[feature];
+		const int sub_feature = feature2subfeature_[feature];
+		return feature_groups_[group]->Split(sub_feature, threshold, num_threshold, default_left, data_indices, num_data, lte_indices, gt_indices);
+	}
+
 private:
 
 	int num_data_;
