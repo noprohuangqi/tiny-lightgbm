@@ -20,7 +20,7 @@ public:
 	virtual void Init(const Dataset* train_data) = 0;
 	virtual Tree* Train(const float* gradients, const float* hessians, bool is_constant_hessian) = 0;
 	
-
+	virtual void AddPredictionToScore(const Tree* tree, double* out_score) const = 0;
 };
 
 
@@ -33,6 +33,21 @@ protected:
 	virtual void ConstructHistograms(const std::vector<int>& is_feature_used, bool use_substract);
 	virtual void FindBestSplitsFromHistograms(const std::vector<int>& is_feature_used, bool use_subtract);
 	virtual void Split(Tree* tree, int best_leaf, int* left_leaf, int* right_leaf);
+
+	void AddPredictionToScore(const Tree* tree, double* out_score) const override {
+		if (tree->num_leaves() <= 1) { return; }
+		
+
+		for (int i = 0; i < tree->num_leaves(); ++i) {
+			double output = static_cast<double>(tree->LeafOutput(i));
+			int cnt_leaf_data = 0;
+			auto tmp_idx = data_partition_->GetIndexOnLeaf(i, &cnt_leaf_data);
+			for (int j = 0; j < cnt_leaf_data; ++j) {
+				out_score[tmp_idx[j]] += output;
+			}
+		}
+	}
+
 
 	const Dataset* train_data_;
 	int num_data_;

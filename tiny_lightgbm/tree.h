@@ -19,6 +19,23 @@ public:
 
 	inline int leaf_depth(int leaf_idx) const { return leaf_depth_[leaf_idx]; }
 
+	inline int num_leaves() const { return num_leaves_; }
+
+	inline void Shrinkage(double rate) {
+
+		for (int i = 0; i < num_leaves_; ++i) {
+			leaf_value_[i] *= rate;
+		}
+		shrinkage_ *= rate;
+	}
+
+	inline double LeafOutput(int leaf) const { return leaf_value_[leaf]; }
+	inline void AsConstantTree(double val) {
+		num_leaves_ = 1;
+		shrinkage_ = 1.0f;
+		leaf_value_[0] = val;
+	}
+
 private:
 	int max_leaves_;
 	int num_leaves_;

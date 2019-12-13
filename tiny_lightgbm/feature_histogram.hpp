@@ -3,6 +3,7 @@
 #include "bin.h"
 #include "split_info.hpp"
 #include  "utils.h"
+#include "config.h"
 
 namespace Tiny_LightGBM {
 

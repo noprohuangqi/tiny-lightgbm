@@ -44,6 +44,9 @@ public:
 
 	const double* GetTrainingScore(int* out_len) override;
 
+	virtual void UpdateScore(const Tree* tree, const int cur_tree_id);
+
+
 private:
 
 	const Dataset* train_data_;
@@ -74,6 +77,8 @@ private:
 	std::vector<bool> class_need_train_;
 
 	std::vector<std::unique_ptr<Tree>> models_;
+
+	double shrinkage_rate_;
 
 };
 

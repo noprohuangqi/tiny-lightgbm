@@ -43,9 +43,18 @@ void GBDT::Init(const Dataset* train_data,
 
 	class_need_train_ = std::vector<bool>(num_tree_per_iteration_, true);
 
+	//默认不进行shrinkage
+	shrinkage_rate_ = 1.0f;
+
 
 }
 
+void GBDT::UpdateScore(const Tree* tree, const int cur_tree_id) {
+
+	//更新
+	train_score_updater_->AddScore(tree_learner_.get(), tree, cur_tree_id);
+
+}
 
 bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
 
@@ -78,9 +87,25 @@ bool GBDT::TrainOneIter(const float* gradients, const float* hessians) {
 		new_tree.reset(tree_learner_->Train(grad, hess, is_constant_hessian_));
 
 
+		if (new_tree->num_leaves() > 1) {
+			should_continue = true;
+			new_tree->Shrinkage(shrinkage_rate_);
+			UpdateScore(new_tree.get(), cur_tree_id);
+		}
+		else {
+			if (models_.size() < static_cast<size_t>(num_tree_per_iteration_)) {
+				double output = 0.0;
+				output = init_scores[cur_tree_id];
+				new_tree->AsConstantTree(output);
+				train_score_updater_->AddScore(output, cur_tree_id);
+			}
 
+		}
 
+		models_.push_back(std::move(new_tree));
 	}
+
+	
 
 
 }
