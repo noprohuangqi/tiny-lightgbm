@@ -36,6 +36,38 @@ public:
 		leaf_value_[0] = val;
 	}
 
+	inline int PredictLeafIndex(const double* feature_values) const;
+	inline int GetLeaf(const double* feature_values) const;
+
+
+	inline int NumericalDecision(double fval, int node) const {
+		
+
+
+		if (std::isnan(fval)) {
+			
+			fval = 0.0f;
+			
+		}
+		
+		if (fval <= threshold_[node]) {
+			return left_child_[node];
+		}
+		else {
+			return right_child_[node];
+		}
+	}
+
+
+	inline double Predict(const double* feature_values) const;
+
+
+
+	
+
+
+
+
 private:
 	int max_leaves_;
 	int num_leaves_;
@@ -109,5 +141,40 @@ inline void Tree::Split(int leaf, int feature, int real_feature,
 	leaf_depth_[num_leaves_] = leaf_depth_[leaf] + 1;
 	leaf_depth_[leaf]++;
 }
+
+
+inline int Tree::PredictLeafIndex(const double* feature_values) const {
+	if (num_leaves_ > 1) {
+		int leaf = GetLeaf(feature_values);
+		return leaf;
+	}
+	else {
+		return 0;
+	}
+}
+inline int Tree::GetLeaf(const double* feature_values) const {
+	int node = 0;
+	
+	
+	while (node >= 0) {
+		node = NumericalDecision(feature_values[split_feature_[node]], node);
+	}
+	
+	return ~node;
+}
+
+
+inline double Tree::Predict(const double* feature_values) const {
+	if (num_leaves_ > 1) {
+		int leaf = GetLeaf(feature_values);
+		return LeafOutput(leaf);
+	}
+	else {
+		return leaf_value_[0];
+	}
+}
+
+
+
 
 }

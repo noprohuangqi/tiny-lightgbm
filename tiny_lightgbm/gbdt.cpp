@@ -14,6 +14,8 @@ void GBDT::Init(const Dataset* train_data,
 	train_data_ = train_data;
 	iter_ = 0;
 
+	max_feature_idx_ = 0;
+
 	objective_function_ = objective_function;
 	num_tree_per_iteration_ = 1;
 	is_constant_hessian_ = true;
@@ -45,6 +47,8 @@ void GBDT::Init(const Dataset* train_data,
 
 	//默认不进行shrinkage
 	shrinkage_rate_ = 1.0f;
+
+	max_feature_idx_ = train_data_->num_total_features() - 1;
 
 
 }
@@ -135,6 +139,25 @@ double GBDT::BoostFromAverage(int class_id, bool update_scorer) {
 	return 0.0f;
 }
 
+
+void GBDT::Predict(const double* features, double* output) const {
+
+	PredictRaw(features, output);
+	
+}
+
+void GBDT::PredictRaw(const double* features, double* output) const {
+
+	std::memset(output, 0, sizeof(double) * num_tree_per_iteration_);
+
+	for (int i = 0; i < num_iteration_for_pred_; ++i) {
+		// predict all the trees for one iteration
+		for (int k = 0; k < num_tree_per_iteration_; ++k) {
+			output[k] += models_[i * num_tree_per_iteration_ + k]->Predict(features);
+		}
+		
+	}
+}
 
 
 }

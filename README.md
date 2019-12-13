@@ -9,4 +9,4 @@ And now all note and code explain was written by Chinese , English note may be c
 
 如果对你理解代码有帮助，请star。
 
-If this work is benifit for you, please star.
+If this work can help you, please star.

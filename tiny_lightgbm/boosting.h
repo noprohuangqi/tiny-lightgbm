@@ -21,6 +21,14 @@ public:
 	
 	virtual const double* GetTrainingScore(int* out_len) = 0;
 
+	virtual void InitPredict()=0;
+
+	virtual int MaxFeatureIdx() const =0;
+	virtual void Predict(
+		const double* features, double* output) const = 0;
+
+	virtual void PredictRaw(const double* features, double* output) const =0;
+
 private:
 
 };
@@ -45,7 +53,15 @@ public:
 	const double* GetTrainingScore(int* out_len) override;
 
 	virtual void UpdateScore(const Tree* tree, const int cur_tree_id);
+	inline void InitPredict() override {
+		num_iteration_for_pred_ = static_cast<int>(models_.size()) / num_tree_per_iteration_;
+	}
 
+	inline int MaxFeatureIdx() const override { return max_feature_idx_; }
+
+	void Predict(const double* features, double* output) const override;
+
+	void PredictRaw(const double* features, double* output) const override;
 
 private:
 
@@ -79,6 +95,10 @@ private:
 	std::vector<std::unique_ptr<Tree>> models_;
 
 	double shrinkage_rate_;
+
+	int num_iteration_for_pred_;
+
+	int max_feature_idx_;
 
 };
 

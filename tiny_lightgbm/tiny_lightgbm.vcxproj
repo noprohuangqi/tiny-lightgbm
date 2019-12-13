@@ -160,6 +160,7 @@
     <ClInclude Include="leaf_splits.hpp" />
     <ClInclude Include="metric.h" />
     <ClInclude Include="objective_function.h" />
+    <ClInclude Include="predictor.hpp" />
     <ClInclude Include="regression_metric.hpp" />
     <ClInclude Include="score_updater.hpp" />
     <ClInclude Include="split_info.hpp" />

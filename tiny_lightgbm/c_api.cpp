@@ -8,6 +8,7 @@
 #include "objective_function.h"
 #include "metric.h"
 #include "regression_metric.hpp"
+#include "predictor.hpp"
 
 
 #include <cstdio>
@@ -58,6 +59,34 @@ public:
 
 		return boosting_->TrainOneIter(nullptr, nullptr);
 	}
+
+	void Predict( int nrow,
+				std::function<std::vector<std::pair<int, double>>(int row_idx)> get_row_fun,
+				double* out_result, int* out_len) {
+
+		/*
+		正常预测就可以了，以下都忽略
+		bool is_predict_leaf = false;
+		bool is_raw_score = false;
+		bool predict_contrib = false;
+		*/
+
+		Predictor predictor(boosting_.get());
+		//回归
+		int num_pred_in_one_row = 1;
+
+		auto pred_fun = predictor.GetPredictFunction();
+
+		for (int i = 0; i < nrow; ++i) {
+			
+			auto one_row = get_row_fun(i);
+			auto pred_wrt_ptr = out_result + static_cast<size_t>(num_pred_in_one_row) * i;
+			pred_fun(one_row, pred_wrt_ptr);
+			
+		}
+		*out_len = num_pred_in_one_row * nrow;
+	}
+
 
 private:
 	const Dataset* train_data_;
@@ -201,5 +230,35 @@ int LGBM_BoosterCreate(const void* train_data ,
 	*out = ret.release();
 }
 
+int LGBM_BoosterPredictForMat(void* model,
+									const void* data,
+									int nrow,
+									int ncol,
+						
+									int* out_len,
+									double* out_result) {
+	Booster* ref_booster = reinterpret_cast<Booster*>(model);
+	auto get_row_fun = RowPairFunctionFromDenseMatric(data, nrow, ncol);
 
+	ref_booster->Predict( nrow, get_row_fun,out_result, out_len);
+
+}
+
+std::function<std::vector<std::pair<int, double>>(int row_idx)>
+RowPairFunctionFromDenseMatric(const void* data, int num_row, int num_col) {
+	auto inner_function = RowFunctionFromDenseMatric(data, num_row, num_col);
+	if (inner_function != nullptr) {
+		return [inner_function](int row_idx) {
+			auto raw_values = inner_function(row_idx);
+			std::vector<std::pair<int, double>> ret;
+			for (int i = 0; i < static_cast<int>(raw_values.size()); ++i) {
+				if (std::fabs(raw_values[i]) > kZeroThreshold || std::isnan(raw_values[i])) {
+					ret.emplace_back(i, raw_values[i]);
+				}
+			}
+			return ret;
+		};
+	}
+	return nullptr;
+}
 

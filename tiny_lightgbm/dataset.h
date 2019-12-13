@@ -149,6 +149,8 @@ public:
 		return feature_groups_[group]->Split(sub_feature, threshold, num_threshold, default_left, data_indices, num_data, lte_indices, gt_indices);
 	}
 
+	inline int num_total_features() const { return num_total_features_; }
+
 private:
 
 	int num_data_;
