@@ -1,6 +1,6 @@
 # **code explain**
 
-waiting for complete
+The English version is waiting for completing.
 
 
 
