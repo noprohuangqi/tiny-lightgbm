@@ -8,7 +8,7 @@
 
 目前所有的注释和代码解释是中文（代码解释.md），未来可能会更新英文注释。
 
-如果对你理解代码有帮助，**star**。
+如果对你理解代码有帮助，**请STAR**。
 
 A simple implementation of lightgbm , only for study source code(cpython , c++ , python) and gbdt.
 
@@ -16,7 +16,7 @@ This work stems from LightGBM , thanks.
 
 And now all code annotation and code explain was written by Chinese , English note may be completed in the future work.
 
-If this work can help you, **please star**.
+If this work can help you, **please STAR**.
 
 
 
@@ -32,4 +32,4 @@ Our code from lightgbm.py , then use the cpython interface of c_api.cpp . All co
 
 难免有很多错误，希望大家不吝指出。
 
-This work may have some mistaks， please contact me.
+This work may have some mistakes， please contact me.
