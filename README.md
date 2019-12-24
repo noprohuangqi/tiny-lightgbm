@@ -39,3 +39,5 @@ This work may have some mistakes， please contact me.
 3.更多的目标函数分析
 
 4.多线程加速处理
+
+5.设计模式分析
