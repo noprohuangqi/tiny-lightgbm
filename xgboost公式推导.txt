@@ -1,0 +1,29 @@
+sum(1 , n) -> loss(y , yi)
+sum(1 , k) -> com(fi)
+
+yi
+y0 = 0
+y1 = y0 + f1
+y2 = y1 + f2
+yt = yt-1 + ft
+
+
+sum(1 , n) -> loss(y , yt-1 + ft)
+sum(1 , k) -> com(fi)
+
+
+sum(1 , n) -> loss(y , yt-1) + ft * gi + ft^2 * hi
+sum(1 , k) -> com(fi)
+
+sum(1 , n) -> loss(y , yt-1) + ft * gi + ft^2 * hi
+r1* T  + r2 * sum(1 , T) wi^2
+
+
+sum(1 , T)j -> sum(1 , M)i ->  gi * wj + 1/2 (hi + r2) * wj^2 + r1 * T 
+
+
+
+
+
+
+
